@@ -75,87 +75,126 @@ export default function Dashboard() {
     keep: report?.recommendations.filter(r => getEffectiveAction(r) === 'keep') ?? [],
   }
 
+  const totalActions = sorted.unsubscribe.length + sorted.archive.length
+
   if (status === 'loading') {
-    return <div className="p-8 text-center text-gray-500">Loading...</div>
+    return (
+      <div className="min-h-screen bg-[#09090b] flex items-center justify-center">
+        <div className="w-5 h-5 rounded-full border-2 border-zinc-700 border-t-zinc-300 animate-spin" />
+      </div>
+    )
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-gray-900">Gmail Triage</h1>
+    <div className="min-h-screen bg-[#09090b] text-white">
+      {/* nav */}
+      <header className="border-b border-white/[0.06] px-6 py-4 flex items-center justify-between sticky top-0 bg-[#09090b]/80 backdrop-blur-sm z-10">
+        <span className="font-semibold text-white tracking-tight">Mailstill</span>
         <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-500">{session?.user?.email}</span>
-          <button onClick={() => signOut()} className="text-sm text-gray-500 hover:text-gray-700">
+          <span className="text-sm text-zinc-500">{session?.user?.email}</span>
+          <button
+            onClick={() => signOut()}
+            className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
+          >
             Sign out
           </button>
         </div>
       </header>
 
-      <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+      <div className="max-w-2xl mx-auto px-4 py-10 space-y-8">
+
+        {/* scan prompt */}
         {!report && (
-          <div className="text-center space-y-4">
-            <p className="text-gray-600">
-              Ready to clean your inbox? We'll scan your last 500 emails.
-            </p>
+          <div className="relative rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden p-8 text-center space-y-5">
+            <div className="absolute inset-0 bg-gradient-to-br from-violet-600/5 to-transparent pointer-events-none" />
+            <div className="relative space-y-2">
+              <h2 className="text-2xl font-semibold text-white">Ready to distill your inbox?</h2>
+              <p className="text-zinc-500 text-sm">
+                We'll scan your last 500 emails and use Claude AI to surface what to cut.
+              </p>
+            </div>
             <button
               onClick={scan}
               disabled={scanning}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition"
+              className="relative inline-flex items-center gap-2 px-6 py-2.5 bg-white text-zinc-900 rounded-xl font-medium text-sm hover:bg-zinc-100 disabled:opacity-50 transition-all"
             >
-              {scanning ? 'Scanning...' : 'Scan My Inbox'}
+              {scanning ? (
+                <>
+                  <span className="w-4 h-4 rounded-full border-2 border-zinc-400 border-t-zinc-800 animate-spin" />
+                  Scanning…
+                </>
+              ) : (
+                'Scan My Inbox'
+              )}
             </button>
           </div>
         )}
 
+        {/* results */}
         {report && (
           <>
+            {/* stats bar */}
             <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-500">
-                Scanned {report.totalEmails} emails · {report.recommendations.length} senders analyzed
-              </p>
-              <button onClick={scan} disabled={scanning} className="text-sm text-blue-600 hover:underline">
-                Rescan
+              <div className="flex items-center gap-3 text-sm text-zinc-500">
+                <span>{report.totalEmails} emails scanned</span>
+                <span className="w-1 h-1 rounded-full bg-zinc-700" />
+                <span>{report.recommendations.length} senders analyzed</span>
+              </div>
+              <button
+                onClick={scan}
+                disabled={scanning}
+                className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors disabled:opacity-50"
+              >
+                {scanning ? 'Scanning…' : 'Rescan'}
               </button>
             </div>
 
             <TriageSection
-              title="Recommended Unsubscribe"
-              emoji="🔴"
+              title="Unsubscribe"
+              color="red"
               recommendations={sorted.unsubscribe}
               onMove={moveAction}
             />
             <TriageSection
-              title="Recommended Archive"
-              emoji="🟡"
+              title="Archive"
+              color="amber"
               recommendations={sorted.archive}
               onMove={moveAction}
             />
             <TriageSection
-              title="Keep in Inbox"
-              emoji="🟢"
+              title="Keep"
+              color="emerald"
               recommendations={sorted.keep}
               onMove={moveAction}
             />
 
             {applyResult && (
-              <div className="p-4 rounded-lg bg-green-50 border border-green-200 text-green-800 text-sm">
-                Done! {applyResult.succeeded} senders processed.
-                {applyResult.failed > 0 && ` ${applyResult.failed} failed — check manually.`}
+              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+                <span>
+                  Done — {applyResult.succeeded} senders processed.
+                  {applyResult.failed > 0 && ` ${applyResult.failed} failed, check manually.`}
+                </span>
               </div>
             )}
 
             <button
               onClick={apply}
-              disabled={applying}
-              className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition"
+              disabled={applying || totalActions === 0}
+              className="w-full py-3 rounded-xl font-medium text-sm bg-white text-zinc-900 hover:bg-zinc-100 disabled:opacity-40 transition-all"
             >
-              {applying
-                ? 'Applying...'
-                : `Apply Triage (${sorted.unsubscribe.length + sorted.archive.length} actions)`}
+              {applying ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 rounded-full border-2 border-zinc-400 border-t-zinc-800 animate-spin" />
+                  Applying…
+                </span>
+              ) : (
+                `Apply ${totalActions} action${totalActions !== 1 ? 's' : ''}`
+              )}
             </button>
           </>
         )}
       </div>
-    </main>
+    </div>
   )
 }
