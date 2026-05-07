@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
       <div className="max-w-md w-full text-center space-y-6">
-        <h1 className="text-4xl font-bold text-gray-900">Gmail Triage</h1>
+        <h1 className="text-4xl font-bold text-gray-900">Mailstill</h1>
         <p className="text-lg text-gray-600">
           AI-powered inbox cleaner. Unsubscribe, categorize, and clean — in minutes.
         </p>

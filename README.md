@@ -1,10 +1,10 @@
-# Gmail Triage
+# Mailstill
 
-> AI-powered Gmail inbox cleaner. Scan → Review → Organize — all in one click.
+> Distill your Gmail inbox with AI. Scan → Review → Organize — all in one click.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kizimi/gmail-triage&env=ANTHROPIC_API_KEY,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,NEXTAUTH_SECRET,NEXTAUTH_URL&envDescription=See%20.env.example%20for%20details)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kizimi/mailstill&env=ANTHROPIC_API_KEY,GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,NEXTAUTH_SECRET,NEXTAUTH_URL&envDescription=See%20.env.example%20for%20details)
 
-**Gmail Triage** uses Claude AI to analyze your inbox and recommend what to unsubscribe, archive, or keep — then lets you review and apply changes in bulk.
+**Mailstill** uses Claude AI to analyze your inbox and recommend what to unsubscribe, archive, or keep — then lets you review and apply changes in bulk.
 
 - 🔴 **Unsubscribe** — low open-rate newsletters you haven't read in weeks
 - 🟡 **Archive** — automated notifications organized into smart labels
@@ -48,8 +48,8 @@ Sign up at [console.anthropic.com](https://console.anthropic.com) and create an 
 ### 3. Clone and run
 
 ```bash
-git clone https://github.com/kizimi/gmail-triage.git
-cd gmail-triage
+git clone https://github.com/kizimi/mailstill.git
+cd mailstill
 npm install
 
 cp .env.example .env.local
@@ -80,7 +80,7 @@ Open [http://localhost:3000](http://localhost:3000) and sign in with Google.
    - `ANTHROPIC_API_KEY` — your Anthropic key
    - `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` — from Google Cloud Console
    - `NEXTAUTH_SECRET` — any random 32-byte string (`openssl rand -base64 32`)
-   - `NEXTAUTH_URL` — your Vercel deployment URL (e.g. `https://gmail-triage.vercel.app`)
+   - `NEXTAUTH_URL` — your Vercel deployment URL (e.g. `https://mailstill.vercel.app`)
 3. Add your Vercel URL as an authorized redirect URI in Google Cloud Console:
    `https://your-app.vercel.app/api/auth/callback/google`
 
@@ -88,7 +88,7 @@ Open [http://localhost:3000](http://localhost:3000) and sign in with Google.
 
 ## MCP Server (Claude Code)
 
-This project includes an MCP server so you can triage your inbox directly inside Claude Code.
+Mailstill includes an MCP server so you can triage your inbox directly inside Claude Code.
 
 ### Build the MCP server
 
@@ -103,9 +103,9 @@ In `.claude/settings.json`:
 ```json
 {
   "mcpServers": {
-    "gmail-triage": {
+    "mailstill": {
       "command": "node",
-      "args": ["/absolute/path/to/gmail-triage/dist/mcp/server.js"],
+      "args": ["/absolute/path/to/mailstill/dist/mcp/server.js"],
       "env": {
         "ANTHROPIC_API_KEY": "sk-ant-...",
         "GOOGLE_CLIENT_ID": "your-client-id",
@@ -143,7 +143,7 @@ In `.claude/settings.json`:
 ## Project Structure
 
 ```
-gmail-triage/
+mailstill/
 ├── app/
 │   ├── api/
 │   │   ├── auth/[...nextauth]/   # Google OAuth2

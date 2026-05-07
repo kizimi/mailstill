@@ -6,8 +6,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Gmail Triage — AI-powered inbox cleaner',
-  description: 'Unsubscribe, categorize, and clean your Gmail inbox with AI.',
+  title: 'Mailstill — AI-powered inbox cleaner',
+  description: 'Distill your Gmail inbox with AI. Unsubscribe, categorize, and clean in minutes.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
